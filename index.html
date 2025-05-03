@@ -216,7 +216,7 @@
         liveRate = eurToInr / eurToBase;
 
         document.getElementById("exchange-rate").innerHTML =
-  `1 ${baseCurrency} = ₹${liveRate.toFixed(2)} INR<br><span style="font-size: 12px; color: gray;">Live rate powered by <a href="https://exchangeratesapi.io" target="_blank" style="color: gray; text-decoration: underline;">exchangeratesapi.io</a></span>`;
+  `1 ${baseCurrency} = ₹${liveRate.toFixed(2)} INR<br><br><span style="font-size: 12px; color: gray;">Live rate powered by <a href="https://exchangeratesapi.io" target="_blank" style="color: gray; text-decoration: underline;">exchangeratesapi.io</a></span>`;
       } catch (error) {
         console.error("Exchange rate fetch failed:", error);
         liveRate = 83.5;
