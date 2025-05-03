@@ -1,144 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta tags for character encoding and page title -->
+  <!-- Meta tags for character encoding and viewport for responsiveness -->
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Desi Currency Converter</title>
 
-  <!-- Inline CSS for styling the page and conversion widget -->
+  <!-- Inline CSS for styling and responsiveness -->
   <style>
     /* Global body styles */
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: #f4f8fb; /* Light background color for contrast */
+      background: #f4f8fb;
       margin: 0;
-      padding: 40px;
+      padding: 20px;
       text-align: center;
     }
 
     /* Header styling */
     h1 {
       color: #333;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
     }
 
-    /* Container for the converter to center and style it */
+    /* Converter container: fluid width with max limit */
     .converter-box {
       background: #fff;
       border-radius: 12px;
       padding: 30px;
       max-width: 500px;
+      width: 100%;
       margin: auto;
       box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
     }
 
-    /* Common styles for input fields, dropdowns, and buttons */
+    /* Shared styles for form controls */
     input,
     select,
     button {
       padding: 12px;
-      margin: 10px;
-      font-size: 16px;
+      margin: 8px 0;
+      font-size: 1rem;
       border-radius: 8px;
       border: 1px solid #ccc;
       outline: none;
+      width: 100%;            /* full width by default */
+      box-sizing: border-box; /* include padding in width */
     }
 
-    /* Button-specific styles */
+    /* Button-specific styling */
     button {
-      background-color: #008CFF; /* Brand color */
+      background-color: #008CFF;
       color: #fff;
       border: none;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
-    /* Hover effect for button */
     button:hover {
       background-color: #006fd1;
     }
 
-    /* Styling for displaying the exchange rate */
+    /* Exchange rate and result display */
     #exchange-rate {
       margin-top: 10px;
-      font-size: 14px;
+      font-size: 0.9rem;
       color: gray;
     }
 
-    /* Styling for the conversion result output */
     #result {
       margin-top: 20px;
-      font-size: 22px;
+      font-size: 1.2rem;
       font-weight: bold;
       color: #008CFF;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      .converter-box {
+        padding: 20px;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      /* Stagger controls for small screens */
+      input, select, button {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Main heading of the page -->
+  <!-- Main heading -->
   <h1>Desi Currency Converter</h1>
 
-  <!-- Converter widget container -->
+  <!-- Converter widget -->
   <div class="converter-box">
-    <!-- Inputs: currency selector, amount input, and unit selector -->
-    <div>
-      <select id="currency">
-        <!-- Supported base currencies -->
-        <option value="USD" selected>USD</option>
-        <option value="EUR">EUR</option>
-        <option value="SGD">SGD</option>
-        <option value="GBP">GBP</option>
-        <option value="AUD">AUD</option>
-      </select>
+    <!-- Currency selector -->
+    <select id="currency">
+      <option value="USD" selected>USD</option>
+      <option value="EUR">EUR</option>
+      <option value="SGD">SGD</option>
+      <option value="GBP">GBP</option>
+      <option value="AUD">AUD</option>
+    </select>
 
-      <!-- Numeric input for the amount to convert -->
-      <input type="number" id="amount" placeholder="Enter amount" />
+    <!-- Amount input -->
+    <input type="number" id="amount" placeholder="Enter amount" />
 
-      <!-- Unit dropdown to scale the amount (unit/hundred/thousand/etc.) -->
-      <select id="unit">
-        <option value="unit">Unit</option>
-        <option value="hundred">Hundred</option>
-        <option value="thousand">Thousand</option>
-        <option value="million" selected>Million</option>
-        <option value="billion">Billion</option>
-      </select>
-    </div>
+    <!-- Unit selector -->
+    <select id="unit">
+      <option value="unit">Unit</option>
+      <option value="hundred">Hundred</option>
+      <option value="thousand">Thousand</option>
+      <option value="million" selected>Million</option>
+      <option value="billion">Billion</option>
+    </select>
 
-    <!-- Button that triggers the conversion -->
+    <!-- Convert button -->
     <button onclick="convert()">Convert</button>
 
-    <!-- Divs to show the live exchange rate and the final result -->
+    <!-- Live exchange rate display -->
     <div id="exchange-rate"></div>
+
+    <!-- Conversion result display -->
     <div id="result"></div>
   </div>
 
-  <!-- JavaScript to handle API calls, calculations, and UI updates -->
+  <!-- JavaScript for conversion logic -->
   <script>
-    // Variable to hold the latest fetched exchange rate
     let liveRate = null;
-
-    // API key for exchangeratesapi.io (replace with your own key in production)
     const apiKey = 'fe89e320c537e2e96eb4728a3682c40e';
 
-    /**
-     * Main function to perform the currency conversion
-     * - Fetches the latest rates
-     * - Calculates INR equivalent
-     * - Updates the UI with results
-     */
     async function convert() {
-      // Read user selections and input
       const baseCurrency = document.getElementById("currency").value;
       const amount = parseFloat(document.getElementById("amount").value);
       const unit = document.getElementById("unit").value;
 
-      // Validate numeric input
       if (isNaN(amount)) {
         document.getElementById("result").innerHTML = "Please enter a valid number.";
         return;
       }
 
-      // Map unit to numeric multiplier
       const multiplier = {
         unit: 1,
         hundred: 100,
@@ -147,45 +159,37 @@
         billion: 1_000_000_000
       }[unit];
 
-      // Handle invalid unit selection
       if (!multiplier) {
         document.getElementById("result").innerHTML = "Invalid unit selected.";
         return;
       }
 
       try {
-        // Fetch latest rates for INR and selected base currency
         const response = await fetch(
           `https://api.exchangeratesapi.io/v1/latest?access_key=${apiKey}&symbols=INR,${baseCurrency}`
         );
         const data = await response.json();
 
-        // Ensure API returned expected values
         if (!data.success || !data.rates?.INR || !data.rates[baseCurrency]) {
           throw new Error("API response incomplete");
         }
 
-        // Calculate direct base -> INR rate via EUR as intermediary
         const eurToInr = data.rates.INR;
         const eurToBase = data.rates[baseCurrency];
         liveRate = eurToInr / eurToBase;
 
-        // Display the fetched exchange rate
         document.getElementById("exchange-rate").innerHTML =
           `1 ${baseCurrency} = ₹${liveRate.toFixed(2)} INR`;
       } catch (error) {
         console.error("Exchange rate fetch failed:", error);
-        // Fallback rate if API fails
         liveRate = 83.5;
         document.getElementById("exchange-rate").innerHTML =
           "Could not fetch rate. Using fallback: ₹83.5";
       }
 
-      // Convert the entered amount to INR
       const baseAmount = amount * multiplier;
       const inrAmount = baseAmount * liveRate;
 
-      // Format the output in Crores, Lakhs, Thousands, or Rupees
       const outputText = inrAmount >= 1e7
         ? `₹${(inrAmount / 1e7).toFixed(2)} Crores`
         : inrAmount >= 1e5
@@ -194,17 +198,13 @@
             ? `₹${(inrAmount / 1e3).toFixed(2)} Thousands`
             : `₹${inrAmount.toFixed(2)} Rupees`;
 
-      // Update the result on the page
       document.getElementById("result").innerHTML = outputText;
     }
 
-    // Optional: Show a loading message when currency selection changes
     document.getElementById("currency").addEventListener("change", () => {
       const selected = document.getElementById("currency").value;
-      document.getElementById("exchange-rate").innerHTML =
-        `Fetching ${selected} to INR rate...`;
+      document.getElementById("exchange-rate").innerHTML = `Fetching ${selected} to INR rate...`;
     });
   </script>
-
 </body>
 </html>
