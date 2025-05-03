@@ -105,6 +105,11 @@
 
   <!-- Converter widget -->
   <div class="converter-box">
+    <!-- API Key input and buttons -->
+    <input type="text" id="apiKeyInput" placeholder="Enter your exchangeratesapi.io API key" />
+    <button onclick="saveApiKey()">Save API Key</button>
+    <button onclick="resetApiKey()">Reset API Key</button>
+
     <!-- Currency selector -->
     <select id="currency">
       <option value="USD" selected>USD</option>
@@ -138,14 +143,32 @@
 
   <!-- JavaScript for conversion logic -->
   <script>
-    let apiKey = sessionStorage.getItem('apiKey');
-if (!apiKey) {
-  apiKey = prompt("Enter your exchangeratesapi.io API key:");
-  sessionStorage.setItem('apiKey', apiKey);
-}
+    // Save API key to sessionStorage
+    function saveApiKey() {
+      const input = document.getElementById("apiKeyInput").value.trim();
+      if (input) {
+        sessionStorage.setItem("apiKey", input);
+        alert("API Key saved successfully.");
+      } else {
+        alert("Please enter a valid API key.");
+      }
+    }
+
+    // Reset API key in sessionStorage
+    function resetApiKey() {
+      sessionStorage.removeItem("apiKey");
+      alert("API key removed. Please enter a new one.");
+    }
+
     let liveRate = null;
 
     async function convert() {
+      const apiKey = sessionStorage.getItem('apiKey');
+      if (!apiKey) {
+        alert("API key not set. Please enter and save your API key above.");
+        return;
+      }
+
       const baseCurrency = document.getElementById("currency").value;
       const amount = parseFloat(document.getElementById("amount").value);
       const unit = document.getElementById("unit").value;
