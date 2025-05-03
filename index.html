@@ -106,9 +106,11 @@
   <!-- Converter widget -->
   <div class="converter-box">
     <!-- API Key input and buttons -->
-    <input type="text" id="apiKeyInput" placeholder="Enter your exchangeratesapi.io API key" />
-    <button onclick="saveApiKey()">Save API Key</button>
-    <button onclick="resetApiKey()">Reset API Key</button>
+    <div id="apiKeySection">
+      <input type="text" id="apiKeyInput" placeholder="Enter your exchangeratesapi.io API key" />
+      <button onclick="saveApiKey()">Save API Key</button>
+      <button onclick="resetApiKey()">Reset API Key</button>
+    </div>
 
     <!-- Currency selector -->
     <select id="currency">
@@ -145,20 +147,23 @@
   <script>
     // Save API key to sessionStorage
     function saveApiKey() {
-      const input = document.getElementById("apiKeyInput").value.trim();
-      if (input) {
-        sessionStorage.setItem("apiKey", input);
-        alert("API Key saved successfully.");
-      } else {
-        alert("Please enter a valid API key.");
-      }
-    }
+  const input = document.getElementById("apiKeyInput").value.trim();
+  if (input) {
+    sessionStorage.setItem("apiKey", input);
+    document.getElementById("apiKeySection").style.display = "none"; // Hide input section
+    alert("API Key saved successfully.");
+  } else {
+    alert("Please enter a valid API key.");
+  }
+}
+
 
     // Reset API key in sessionStorage
     function resetApiKey() {
-      sessionStorage.removeItem("apiKey");
-      alert("API key removed. Please enter a new one.");
-    }
+  sessionStorage.removeItem("apiKey");
+  alert("API key removed. Please enter a new one.");
+  document.getElementById("apiKeySection").style.display = "block"; // Show input section again
+}
 
     let liveRate = null;
 
@@ -232,6 +237,13 @@
       const selected = document.getElementById("currency").value;
       document.getElementById("exchange-rate").innerHTML = `Fetching ${selected} to INR rate...`;
     });
+
+    // Hide API input section on load if key is already saved
+window.onload = () => {
+  if (sessionStorage.getItem("apiKey")) {
+    document.getElementById("apiKeySection").style.display = "none";
+  }
+};
   </script>
 </body>
 </html>
