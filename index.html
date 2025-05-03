@@ -138,8 +138,12 @@
 
   <!-- JavaScript for conversion logic -->
   <script>
+    let apiKey = sessionStorage.getItem('apiKey');
+if (!apiKey) {
+  apiKey = prompt("Enter your exchangeratesapi.io API key:");
+  sessionStorage.setItem('apiKey', apiKey);
+}
     let liveRate = null;
-    const apiKey = 'fe89e320c537e2e96eb4728a3682c40e';
 
     async function convert() {
       const baseCurrency = document.getElementById("currency").value;
