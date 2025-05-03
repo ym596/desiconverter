@@ -13,7 +13,7 @@ A responsive and localized currency converter that converts major global currenc
 ## 🛠 Features
 
 - Fetches **real-time exchange rates** using the [ExchangeratesAPI.io](https://exchangeratesapi.io/) service
-- Converts and formats INR values into Indian number units
+- Converts and formats international currencies into INR and Indian number units
 - Responsive and mobile-friendly UI
 - Secure handling of API credentials via `sessionStorage`
 
