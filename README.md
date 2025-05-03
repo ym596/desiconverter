@@ -1,6 +1,6 @@
 # Desi Currency Converter 🇮🇳💸
 
-A responsive and localized currency converter that converts major global currencies (USD, EUR, GBP, SGD, AUD) into Indian Rupees and displays results in Indian units — Rupees, Thousands, Lakhs, or Crores.
+A responsive and localized currency converter that converts major global currencies (USD, EUR, GBP, SGD, AUD) into Indian Rupees and displays results in Indian units — Thousands, Lakhs, or Crores.
 
 ---
 
