@@ -106,11 +106,16 @@
   <!-- Converter widget -->
   <div class="converter-box">
     <!-- API Key input and buttons -->
-    <div id="apiKeySection">
-      <input type="text" id="apiKeyInput" placeholder="Enter your exchangeratesapi.io API key" />
-      <button onclick="saveApiKey()">Save API Key</button>
-      <button onclick="resetApiKey()">Reset API Key</button>
-    </div>
+    <!-- API Key input (will be hidden after saving) -->
+<div id="apiKeySection">
+  <input type="text" id="apiKeyInput" placeholder="Enter your exchangeratesapi.io API key" />
+  <button onclick="saveApiKey()">Save API Key</button>
+</div>
+
+<!-- Reset button (always visible) -->
+<div style="margin-top: 10px;">
+  <button onclick="resetApiKey()">Reset API Key</button>
+</div>
 
     <!-- Currency selector -->
     <select id="currency">
