@@ -73,11 +73,29 @@
     }
 
     #result {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #008CFF;
-    }
+  margin-top: 20px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #2e7d32;
+  display: none; /* hide by default */
+}
+
+.result-box {
+  background-color: #e8f5e9;
+  border: 2px dashed #66bb6a;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+  animation: resultBounce 0.5s ease;
+  display: inline-block;
+}
+
+@keyframes resultBounce {
+  0%   { transform: scale(0.95); opacity: 0.5; }
+  50%  { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); }
+}
 
     /* Responsive adjustments */
     @media (max-width: 600px) {
@@ -272,7 +290,10 @@
             ? `₹${(inrAmount / 1e3).toFixed(2)} Thousands`
             : `₹${inrAmount.toFixed(2)} Rupees`;
 
-      document.getElementById("result").innerHTML = outputText;
+            const resultDiv = document.getElementById("result");
+resultDiv.innerHTML = outputText;
+resultDiv.classList.add("result-box");
+resultDiv.style.display = "inline-block";
     }
 
     document.getElementById("currency").addEventListener("change", () => {
