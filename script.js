@@ -87,6 +87,7 @@
 resultDiv.innerHTML = outputText;
 resultDiv.classList.add("result-box");
 resultDiv.style.display = "inline-block";
+updateHistory(`${amount} ${baseCurrency} (${unit}) → ${outputText}`);
 // 🎉 Confetti animation
 confetti({
   particleCount: 100,
@@ -94,6 +95,33 @@ confetti({
   origin: { y: 0.6 }
 });
     }
+
+    function updateHistory(entry) {
+        let history = JSON.parse(localStorage.getItem("conversionHistory")) || [];
+        history.unshift(entry); // Add new at start
+        history = history.slice(0, 5); // Keep only last 5
+        localStorage.setItem("conversionHistory", JSON.stringify(history));
+        renderHistory();
+      }
+      
+      function renderHistory() {
+        const historyList = document.getElementById("historyList");
+        const history = JSON.parse(localStorage.getItem("conversionHistory")) || [];
+      
+        historyList.innerHTML = ""; // Clear old entries
+      
+        if (history.length === 0) {
+          historyList.innerHTML = `<li class="list-group-item bg-dark text-light">No recent conversions yet.</li>`;
+          return;
+        }
+      
+        history.forEach((item) => {
+          const li = document.createElement("li");
+          li.className = "list-group-item bg-dark text-light";
+          li.textContent = item;
+          historyList.appendChild(li);
+        });
+      }
 
     document.getElementById("currency").addEventListener("change", () => {
       const selected = document.getElementById("currency").value;
@@ -105,4 +133,5 @@ window.onload = () => {
   if (sessionStorage.getItem("apiKey")) {
     document.getElementById("apiKeySection").style.display = "none";
   }
+  renderHistory(); // Load saved history on page load
 };
