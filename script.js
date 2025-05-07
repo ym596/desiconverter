@@ -61,19 +61,23 @@ async function convert() {
   }
 }
 
-// Reverse converter: INR → selected currency
-async function convert2() {
+// Reverse converter: mirror of forward UI but flips direction (INR → selected currency)
+async function convertReverse() {
   const apiKey = localStorage.getItem(KEY_NAME);
   if (!apiKey) {
     return alert('Please save your exchangeratesapi.io API key first.');
   }
 
-  const currency = document.getElementById('currency2').value;
-  const rawINR   = parseFloat(document.getElementById('amount2').value);
+  const currency = document.getElementById('currency_rev').value;
+  const rawAmt   = parseFloat(document.getElementById('amount_rev').value);
+  const unit     = document.getElementById('unit_rev').value;
 
-  if (isNaN(rawINR) || rawINR <= 0) {
+  if (isNaN(rawAmt) || rawAmt <= 0) {
     return alert('Enter a positive number.');
   }
+
+  const multipliers = { unit:1, hundred:1e2, thousand:1e3, million:1e6, billion:1e9 };
+  const totalINR = rawAmt * (multipliers[unit] || 1);
 
   try {
     const url = `https://api.exchangeratesapi.io/v1/convert?access_key=${apiKey}` +
@@ -83,16 +87,16 @@ async function convert2() {
     if (data.error) throw new Error(data.error.type || 'API error');
     const rate = data.result;
 
-    document.getElementById('exchange-rate2')
+    document.getElementById('exchange-rate_rev')
       .textContent = `1 INR = ${rate.toFixed(4)} ${currency}`;
 
-    const totalTarget = rawINR * rate;
+    const totalCurr = totalINR * rate;
     const formatted = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency
-    }).format(totalTarget);
+    }).format(totalCurr);
 
-    document.getElementById('result2').textContent = formatted;
+    document.getElementById('result_rev').textContent = formatted;
 
     confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
   } catch (err) {
