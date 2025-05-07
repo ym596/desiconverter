@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta tags for character encoding and viewport for responsiveness -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desi Currency Converter</title>
+
+  <!-- Inline CSS for styling and responsiveness -->
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+
+</head>
+<body>
+
+  <!-- Main heading -->
+  <h1>
+    <span class="desi-word">Desi Currency Converter </span>🇮🇳
+  </h1>
+
+  <div class="intro-box">
+    💼 Just landed your post-MBA job with a salary in USD hundreds of thousands (or millions 👀)?<br>
+    🔍 Googled the conversion and ended up counting zeroes?<br><br>
+    Meet <strong>Desi Currency Converter</strong> — your go-to for converting international money 💵 into INR the <em>Indian</em> way — in <strong>lakhs</strong> and <strong>crores</strong>, not just digits. (<em>Desi</em> = South Asian, especially Indian 🇮🇳)
+  </div>
+
+  <!-- Converter widget -->
+  <div class="converter-box">
+    <!-- API Key input and buttons -->
+    <!-- API Key input (will be hidden after saving) -->
+<div id="apiKeySection">
+  <input type="text" id="apiKeyInput" placeholder="Enter your exchangeratesapi.io API key" />
+  <button onclick="saveApiKey()">Save API Key</button>
+</div>
+
+<!-- Reset button (always visible) -->
+<div style="margin-top: 10px;">
+  <button onclick="resetApiKey()">Reset API Key</button>
+</div>
+
+    <!-- Currency selector -->
+    <select id="currency">
+      <option value="USD" selected>🇺🇸 USD</option>
+      <option value="EUR">🇪🇺 EUR</option>
+      <option value="SGD">🇸🇬 SGD</option>
+      <option value="GBP">🇬🇧 GBP</option>
+      <option value="AUD">🇦🇺 AUD</option>
+    </select>
+
+    <!-- Amount input -->
+    <input type="number" id="amount" placeholder="Enter amount" />
+
+    <!-- Unit selector -->
+    <select id="unit">
+      <option value="unit">Unit</option>
+      <option value="hundred">Hundred</option>
+      <option value="thousand">Thousand</option>
+      <option value="million" selected>Million</option>
+      <option value="billion">Billion</option>
+    </select>
+
+    <!-- Convert button -->
+    <button onclick="convert()">Convert to INR</button>
+
+    <!-- Live exchange rate display -->
+    <div id="exchange-rate"></div>
+
+    <!-- Conversion result display -->
+    <div id="result"></div>
+  </div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+</body>
+</html>
