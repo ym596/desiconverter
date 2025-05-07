@@ -155,20 +155,3 @@ background: linear-gradient(to right, #ff8a00, #e52e71);
 -webkit-text-fill-color: transparent;
 }
 
-/* styles.css */
-body {
-  /* Bootstrap’s bg-dark + text-light already applied */
-  margin: 0;
-  font-family: sans-serif;
-}
-
-.intro-box {
-  background: #000000;
-}
-
-.converter-box {
-  background: #6fa9e2; /* slightly lighter than body bg-dark */
-}
-
-/* You can remove your old variable-based styles now */
-
