@@ -132,6 +132,11 @@ confetti({
         });
       }
 
+      function clearHistory() {
+        localStorage.removeItem("conversionHistory");
+        renderHistory(); // Refresh the display
+      }
+
     document.getElementById("currency").addEventListener("change", () => {
       const selected = document.getElementById("currency").value;
       document.getElementById("exchange-rate").innerHTML = `Fetching ${selected} to INR rate...`;
