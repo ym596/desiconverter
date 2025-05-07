@@ -1,10 +1,11 @@
 // ticker.js
-// Fetch and display live exchange rates in a scrolling ticker
-// Uses the same exchangeratesapi.io API key stored under KEY_NAME
+// Live exchange rates ticker for Desi Currency Converter
+// Fetches major currency pairs and displays them in a scrolling marquee
 
 const TICKER_ID = 'ticker';
 const KEY_NAME = 'exRatesApiKey';
-// Currencies to display (base INR to others or vice versa)
+
+// Currency pairs to display (from → to)
 const pairs = [
   { from: 'USD', to: 'INR' },
   { from: 'EUR', to: 'INR' },
@@ -13,35 +14,49 @@ const pairs = [
   { from: 'INR', to: 'USD' }
 ];
 
+/**
+ * Update the ticker element with live rates or placeholder
+ */
 async function updateTicker() {
+  const tickerEl = document.getElementById(TICKER_ID);
+  if (!tickerEl) return;
+
   const apiKey = localStorage.getItem(KEY_NAME);
-  if (!apiKey) return; // no key, don't run
+  if (!apiKey) {
+    // Show placeholder text if API key not saved
+    tickerEl.textContent = '🔑 Enter & save API key to load live rates...';
+    return;
+  }
 
   try {
-    // Build promises for each pair
-    const fetches = pairs.map(p => {
-      const url = `https://api.exchangeratesapi.io/v1/convert?access_key=${apiKey}` +
-                  `&from=${p.from}&to=${p.to}&amount=1`;
+    // Fetch rates for each pair concurrently
+    const requests = pairs.map(pair => {
+      const url = `https://api.exchangeratesapi.io/v1/convert` +
+                  `?access_key=${apiKey}` +
+                  `&from=${pair.from}&to=${pair.to}&amount=1`;
       return fetch(url)
-        .then(r => r.json())
-        .then(data => ({ pair: `${p.from}/${p.to}`, rate: data.result }));
+        .then(resp => resp.json())
+        .then(data => ({
+          pair: `${pair.from}/${pair.to}`,
+          rate: data.result
+        }));
     });
 
-    const results = await Promise.all(fetches);
-    // Build ticker text
-    const text = results.map(r => `${r.pair}: ${r.rate.toFixed(2)}`).join('   |   ');
+    const results = await Promise.all(requests);
+    // Format ticker content
+    const text = results
+      .map(r => `${r.pair}: ${r.rate.toFixed(2)}`)
+      .join('   |   ');
 
-    const ticker = document.getElementById(TICKER_ID);
-    if (ticker) {
-      // Use innerHTML with marquee for scroll effect
-      ticker.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${text}</marquee>`;
-    }
-  } catch (e) {
-    console.error('Ticker update failed:', e);
+    // Render scrolling marquee
+    tickerEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${text}</marquee>`;
+  } catch (err) {
+    console.error('Ticker error:', err);
+    tickerEl.textContent = '⚠️ Unable to load live rates.';
   }
 }
 
-// Initial load and periodic updates every minute
+// Initialize and refresh every 60 seconds
 document.addEventListener('DOMContentLoaded', () => {
   updateTicker();
   setInterval(updateTicker, 60000);
