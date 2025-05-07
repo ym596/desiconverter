@@ -75,13 +75,22 @@
       const baseAmount = amount * multiplier;
       const inrAmount = baseAmount * liveRate;
 
-      const outputText = inrAmount >= 1e7
-        ? `₹${(inrAmount / 1e7).toFixed(2)} Crores`
-        : inrAmount >= 1e5
-          ? `₹${(inrAmount / 1e5).toFixed(2)} Lakhs`
-          : inrAmount >= 1e3
-            ? `₹${(inrAmount / 1e3).toFixed(2)} Thousands`
-            : `₹${inrAmount.toFixed(2)} Rupees`;
+      const formatter = new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 2
+      });
+      
+      let outputText;
+      if (inrAmount >= 1e7) {
+        outputText = `${formatter.format(inrAmount / 1e7)} Crores`;
+      } else if (inrAmount >= 1e5) {
+        outputText = `${formatter.format(inrAmount / 1e5)} Lakhs`;
+      } else if (inrAmount >= 1e3) {
+        outputText = `${formatter.format(inrAmount / 1e3)} Thousands`;
+      } else {
+        outputText = formatter.format(inrAmount);
+      }
 
             const resultDiv = document.getElementById("result");
 resultDiv.innerHTML = outputText;
