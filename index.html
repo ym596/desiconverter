@@ -28,6 +28,7 @@
       and <strong>crores</strong>, not just digits.
     </div>
 
+    <!-- Forward Converter: Selected Currency → INR -->
     <div class="converter-box p-4 rounded bg-secondary">
       <div id="apiKeySection" class="mb-3">
         <input type="text" id="apiKeyInput" class="form-control mb-2" placeholder="Enter your exchangeratesapi.io API key">
@@ -35,13 +36,6 @@
       </div>
       <div class="mb-3">
         <button class="btn btn-outline-light w-100" onclick="resetApiKey()">Reset API Key</button>
-      </div>
-
-      <div class="form-check form-switch mb-3">
-        <input class="form-check-input" type="checkbox" id="reverseSwitch">
-        <label class="form-check-label text-light" for="reverseSwitch">
-          INR → Selected Currency
-        </label>
       </div>
 
       <select id="currency" class="form-select mb-3">
@@ -66,6 +60,25 @@
 
       <div id="exchange-rate" class="mt-3 fst-italic"></div>
       <div id="result" class="mt-1 fs-5 fw-bold"></div>
+    </div>
+
+    <!-- Reverse Converter: INR → Selected Currency -->
+    <div class="converter-box p-4 rounded bg-secondary mt-4">
+      <h2 class="h5 text-center mb-3 text-light">INR → Selected Currency</h2>
+      <select id="currency2" class="form-select mb-3">
+        <option value="USD" selected>🇺🇸 USD</option>
+        <option value="EUR">🇪🇺 EUR</option>
+        <option value="SGD">🇸🇬 SGD</option>
+        <option value="GBP">🇬🇧 GBP</option>
+        <option value="AUD">🇦🇺 AUD</option>
+      </select>
+
+      <input type="number" id="amount2" class="form-control mb-3" placeholder="Enter amount in INR">
+
+      <button class="btn btn-warning w-100" onclick="convert2()">Convert INR</button>
+
+      <div id="exchange-rate2" class="mt-3 fst-italic"></div>
+      <div id="result2" class="mt-1 fs-5 fw-bold"></div>
     </div>
   </div>
 
