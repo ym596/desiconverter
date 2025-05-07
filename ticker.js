@@ -1,47 +1,51 @@
-// ticker.js
-// Fetch and display live exchange rates in a scrolling ticker
-// Uses the same exchangeratesapi.io API key stored under KEY_NAME
+// ticker.js - Improved Implementation
+// Uses /latest endpoint to fetch multiple rates in one call
 
 const TICKER_ID = 'ticker';
 const KEY_NAME = 'exRatesApiKey';
-// Currencies to display (base INR to others or vice versa)
-const pairs = [
-  { from: 'USD', to: 'INR' },
-  { from: 'EUR', to: 'INR' },
-  { from: 'GBP', to: 'INR' },
-  { from: 'JPY', to: 'INR' },
-  { from: 'INR', to: 'USD' }
-];
+// define target currencies relative to INR
+const targets = ['USD', 'EUR', 'GBP', 'JPY'];
 
+/**
+ * Update the ticker element with live rates or placeholder
+ */
 async function updateTicker() {
+  const tickerEl = document.getElementById(TICKER_ID);
+  if (!tickerEl) return;
+
   const apiKey = localStorage.getItem(KEY_NAME);
-  if (!apiKey) return; // no key, don't run
+  if (!apiKey) {
+    tickerEl.textContent = '🔑 Enter & save API key to load live rates...';
+    return;
+  }
 
   try {
-    // Build promises for each pair
-    const fetches = pairs.map(p => {
-      const url = `https://api.exchangeratesapi.io/v1/convert?access_key=${apiKey}` +
-                  `&from=${p.from}&to=${p.to}&amount=1`;
-      return fetch(url)
-        .then(r => r.json())
-        .then(data => ({ pair: `${p.from}/${p.to}`, rate: data.result }));
-    });
+    // Fetch all target rates relative to INR
+    const symbols = targets.join(',');
+    const url =
+      `https://api.exchangeratesapi.io/v1/latest?access_key=${apiKey}` +
+      `&base=INR&symbols=${symbols}`;
 
-    const results = await Promise.all(fetches);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.info || data.error.type);
+
     // Build ticker text
-    const text = results.map(r => `${r.pair}: ${r.rate.toFixed(2)}`).join('   |   ');
+    const items = targets.map(cur => {
+      const rate = data.rates[cur];
+      return `INR/${cur}: ${rate.toFixed(2)}`;
+    });
+    const text = items.join('   |   ');
 
-    const ticker = document.getElementById(TICKER_ID);
-    if (ticker) {
-      // Use innerHTML with marquee for scroll effect
-      ticker.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${text}</marquee>`;
-    }
-  } catch (e) {
-    console.error('Ticker update failed:', e);
+    // Render scrolling marquee
+    tickerEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${text}</marquee>`;
+  } catch (err) {
+    console.error('Ticker error:', err);
+    tickerEl.textContent = `⚠️ ${err.message}`;
   }
 }
 
-// Initial load and periodic updates every minute
+// Initialize and refresh every 60 seconds
 document.addEventListener('DOMContentLoaded', () => {
   updateTicker();
   setInterval(updateTicker, 60000);

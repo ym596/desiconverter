@@ -11,10 +11,6 @@
     rel="stylesheet"
   />
 
-    <!-- Live Rates Ticker -->
-    <div id="ticker" class="bg-secondary text-light py-2 mb-4"></div>
-    <script src="ticker.js" defer></script>
-
   <!-- Inline glow animation -->
   <style>
     @keyframes haloGlow {
@@ -32,7 +28,6 @@
     <h1 class="text-warning fw-bold mb-4 text-center">
       Desi Currency Converter 🇮🇳
     </h1>
-  
 
     <!-- Intro card -->
     <div class="card bg-secondary text-light mb-4 shadow-sm">
@@ -45,7 +40,7 @@
       </div>
     </div>
 
-    <!-- Forward Converter: Selected Currency → INR -->
+    <!-- Converter: Selected Currency → INR -->
     <div class="card bg-secondary text-light mb-4 shadow">
       <div class="card-body d-flex flex-column gap-3">
         <div id="apiKeySection">
@@ -120,6 +115,35 @@
     </div>
   </div>
 
+  <!-- Live Rates Ticker (no API key needed) -->
+  <div id="ticker" class="bg-secondary text-light py-2 mb-4 w-100">Loading…</div>
+  <script defer>
+    async function updateTicker() {
+      const tickerEl = document.getElementById('ticker');
+      const symbols = ['USD','EUR','GBP','JPY'];
+      try {
+        const res  = await fetch(
+          'https://api.exchangerate.host/latest?base=INR&symbols='
+          + symbols.join(',')
+        );
+        const data = await res.json();
+        const parts = symbols.map(s =>
+          `INR/${s}: ${data.rates[s].toFixed(2)}`
+        );
+        tickerEl.innerHTML =
+          `<marquee behavior="scroll" direction="left" scrollamount="5">`
+          + parts.join('   |   ')
+          + `</marquee>`;
+      } catch (err) {
+        console.error('Ticker fetch error:', err);
+        tickerEl.textContent = '⚠️ Unable to load live rates.';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTicker();
+      setInterval(updateTicker, 60000);
+    });
+  </script>
 
   <!-- Bootstrap JS Bundle (includes Popper) -->
   <script
@@ -133,7 +157,5 @@
   ></script>
   <!-- Custom script -->
   <script src="script.js" defer></script>
-
-
 </body>
 </html>
