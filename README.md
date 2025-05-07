@@ -37,9 +37,9 @@ To use the currency conversion, you need an API key from [ExchangeratesAPI.io](h
 
 ---
 
-## 🧠 Author
+## 🧠 Authors
 
-Created by [Yash Mehta](https://github.com/ym596) as part of a web development project.
+Created by [Yash Mehta, Arun Holehonnur, and Shikhar Gupta] as part of a web development project.
 
 ---
 
