@@ -1,5 +1,5 @@
 // ticker.js
-const symbols = ['USD','EUR','GBP','JPY'];
+const symbols = ['USD','EUR','SGD','GBP','AUD','JPY'];
 
 async function updateTicker() {
   const tickerEl = document.getElementById('ticker');
