@@ -15,7 +15,7 @@ async function updateTicker() {
     // Frankfurter returns { amount:1, base:"INR", date:"...", rates:{ USD:0.012, … } }
     const parts = symbols.map(s => {
       const r = json.rates[s];
-      return `INR/${s}: ${r!=null ? r.toFixed(2) : 'N/A'}`;
+      return `INR/${s}: ${r!=null ? r.toFixed(5) : 'N/A'}`;
     });
 
     tickerEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${
