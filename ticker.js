@@ -3,41 +3,29 @@ const symbols = ['USD','EUR','GBP','JPY'];
 
 async function updateTicker() {
   const tickerEl = document.getElementById('ticker');
-  const url = `https://api.exchangerate.host/latest?base=INR&symbols=${symbols.join(',')}`;
-
+  const url = `https://api.frankfurter.app/latest?from=INR&to=${symbols.join(',')}`;
   console.log('⏳ Fetching ticker rates from:', url);
-  let data;
+
   try {
     const res = await fetch(url);
-    console.log('HTTP status:', res.status, res.statusText);
-    data = await res.json();
-    console.log('✅ Parsed JSON:', data);
+    console.log('HTTP status:', res.status);
+    const json = await res.json();
+    console.log('✅ Frankfurter response:', json);
+
+    // Frankfurter returns { amount:1, base:"INR", date:"...", rates:{ USD:0.012, … } }
+    const parts = symbols.map(s => {
+      const r = json.rates[s];
+      return `INR/${s}: ${r!=null ? r.toFixed(2) : 'N/A'}`;
+    });
+
+    tickerEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${
+      parts.join('   |   ')
+    }</marquee>`;
+
   } catch (err) {
-    console.error('🚨 Network or parse error:', err);
+    console.error('Ticker fetch error:', err);
     tickerEl.textContent = '⚠️ Unable to load live rates.';
-    return;
   }
-
-  // Make sure we actually got a rates object
-  if (!data || typeof data.rates !== 'object') {
-    console.error('🚨 No `rates` field in response:', data);
-    tickerEl.textContent = '⚠️ Unable to load live rates.';
-    return;
-  }
-
-  // Build the marquee, but guard each symbol
-  const parts = symbols.map(s => {
-    const rate = data.rates[s];
-    if (rate == null) {
-      console.warn(`⚠️ No rate for ${s}, got:`, data.rates);
-      return `INR/${s}: N/A`;
-    }
-    return `INR/${s}: ${rate.toFixed(2)}`;
-  });
-
-  tickerEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${
-    parts.join('   |   ')
-  }</marquee>`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
