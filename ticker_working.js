@@ -12,14 +12,10 @@ async function updateTicker() {
     const json = await res.json();
     console.log('✅ Frankfurter response:', json);
 
-    // Invert each INR→X rate to get X→INR
+    // Frankfurter returns { amount:1, base:"INR", date:"...", rates:{ USD:0.012, … } }
     const parts = symbols.map(s => {
       const r = json.rates[s];
-      if (r == null) {
-        return `${s}/INR: N/A`;
-      }
-      const inverted = 1 / r;
-      return `${s}/INR: ${inverted.toFixed(5)}`;
+      return `INR/${s}: ${r!=null ? r.toFixed(5) : 'N/A'}`;
     });
 
     tickerEl.innerHTML = `<marquee behavior="scroll" direction="left" scrollamount="5">${
@@ -34,5 +30,5 @@ async function updateTicker() {
 
 document.addEventListener('DOMContentLoaded', () => {
   updateTicker();
-  setInterval(updateTicker, 60000);
+  setInterval(updateTicker, 60_000);
 });
