@@ -119,16 +119,36 @@
       </div>
     </div>
   </div>
-  …
-  <!-- Live Rates Ticker -->
+
+  <!-- Live Rates Ticker (no API key needed) -->
   <div id="ticker" class="bg-secondary text-light py-2 mb-4 w-100">Loading…</div>
-
-  <!-- your other scripts… -->
-  <script src="ticker.js" defer></script>
-  <script src="script.js" defer></script>
-  …
-
-
+  <script defer>
+    async function updateTicker() {
+      const tickerEl = document.getElementById('ticker');
+      const symbols = ['USD','EUR','GBP','JPY'];
+      try {
+        const res  = await fetch(
+          'https://api.exchangerate.host/latest?base=INR&symbols='
+          + symbols.join(',')
+        );
+        const data = await res.json();
+        const parts = symbols.map(s =>
+          `INR/${s}: ${data.rates[s].toFixed(2)}`
+        );
+        tickerEl.innerHTML =
+          `<marquee behavior="scroll" direction="left" scrollamount="5">`
+          + parts.join('   |   ')
+          + `</marquee>`;
+      } catch (err) {
+        console.error('Ticker fetch error:', err);
+        tickerEl.textContent = '⚠️ Unable to load live rates.';
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      updateTicker();
+      setInterval(updateTicker, 60000);
+    });
+  </script>
 
   <!-- Bootstrap JS Bundle (includes Popper) -->
   <script
