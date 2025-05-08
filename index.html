@@ -11,26 +11,42 @@
     rel="stylesheet"
   />
 
-  <!-- Inline glow animation -->
+  <!-- Inline glow animation (blue accent) and custom button colors -->
   <style>
     @keyframes haloGlow {
-      0%,100% { box-shadow: 0 0 8px #ff8a00; }
-      50%     { box-shadow: 0 0 16px #ffb74d; }
+      0%,100% { box-shadow: 0 0 8px #0b5ed7; }
+      50%     { box-shadow: 0 0 16px #5a8dee; }
     }
     .glow {
       animation: haloGlow 2s ease-in-out infinite;
     }
+
+    /* Pure black background */
+    body {
+      background-color: #000000;
+    }
+
+    /* Slightly darker blue for primary buttons */
+    .btn-primary {
+      background-color: #0b5ed7;
+      border-color: #0a58c0;
+    }
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: #0056b3;
+      border-color: #084298;
+      box-shadow: 0 0 8px rgba(0, 86, 179, 0.7);
+    }
   </style>
 </head>
-<body class="bg-dark text-light d-flex flex-column align-items-center py-4">
+<body class="text-light d-flex flex-column align-items-center py-4">
 
   <div class="container" style="max-width: 480px;">
-    <h1 class="text-warning fw-bold mb-4 text-center">
+    <h1 class="text-primary fw-bold mb-4 text-center">
       Desi Currency Converter 🇮🇳
     </h1>
 
     <!-- Intro card -->
-    <div class="card bg-secondary text-light mb-4 shadow-sm">
+    <div class="card bg-dark bg-opacity-75 text-light mb-4 shadow-sm" style="border: 1px solid #0b5ed7;">
       <div class="card-body">
         <p class="mb-0">
           💼 Just landed your post-MBA job with a salary in USD hundreds of thousands (or millions 👀)?<br>
@@ -41,17 +57,17 @@
     </div>
 
     <!-- Converter: Selected Currency → INR -->
-    <div class="card bg-secondary text-light mb-4 shadow">
+    <div class="card bg-dark bg-opacity-75 text-light mb-4 shadow" style="border: 1px solid #0b5ed7;">
       <div class="card-body d-flex flex-column gap-3">
         <div id="apiKeySection">
           <input
             type="text"
             id="apiKeyInput"
-            class="form-control form-control-lg bg-dark text-light border-secondary"
+            class="form-control form-control-lg bg-black text-light border-primary"
             placeholder="Enter your exchangeratesapi.io API key"
           />
           <button
-            class="btn btn-warning btn-lg w-100 glow mt-2"
+            class="btn btn-primary btn-lg w-100 glow mt-2"
             onclick="saveApiKey()"
           >
             Save API Key
@@ -66,7 +82,7 @@
 
         <select
           id="currency"
-          class="form-select form-select-lg bg-dark text-light border-secondary"
+          class="form-select form-select-lg bg-black text-light border-primary"
         >
           <option value="USD" selected>🇺🇸 USD</option>
           <option value="EUR">🇪🇺 EUR</option>
@@ -78,13 +94,13 @@
         <input
           type="number"
           id="amount"
-          class="form-control form-control-lg bg-dark text-light border-secondary"
+          class="form-control form-control-lg bg-black text-light border-primary"
           placeholder="Enter amount"
         />
 
         <select
           id="unit"
-          class="form-select form-select-lg bg-dark text-light border-secondary"
+          class="form-select form-select-lg bg-black text-light border-primary"
         >
           <option value="unit">Unit</option>
           <option value="hundred">Hundred</option>
@@ -94,40 +110,39 @@
         </select>
 
         <button
-          class="btn btn-warning btn-lg w-100 glow"
+          class="btn btn-primary btn-lg w-100 glow"
           onclick="convert()"
         >
           Convert to INR
         </button>
 
         <div id="exchange-rate" class="text-muted fst-italic mt-3"></div>
-        <div id="result" class="alert alert-dark border-warning mt-3 fw-bold"></div>
+        <div id="result" class="alert bg-black text-light border-primary mt-3 fw-bold"></div>
       </div>
     </div>
+
     <!-- History Log Section -->
-    <div class="card bg-secondary text-light shadow-sm mb-4">
+    <div class="card bg-dark bg-opacity-75 text-light shadow-sm mb-4" style="border: 1px solid #0b5ed7;">
       <div class="card-body">
-        <h5 class="card-title text-warning mb-3">📜 Recent Conversions</h5>
-        <ul id="historyList" class="list-group list-group-flush bg-secondary">
+        <h5 class="card-title text-primary mb-3">📜 Recent Conversions</h5>
+        <ul id="historyList" class="list-group list-group-flush bg-dark bg-opacity-50">
           <!-- History items will be populated here -->
         </ul>
 
         <!-- Clear History Button -->
         <button class="btn btn-outline-light mt-3 w-100" onclick="clearHistory()">
           Clear History
-       </button>
+        </button>
       </div>
     </div>
   </div>
-  …
+
   <!-- Live Rates Ticker -->
-  <div id="ticker" class="bg-secondary text-light py-2 mb-4 w-100">Loading…</div>
+  <div id="ticker" class="bg-dark text-info py-2 mb-4 w-100" style="border-top:1px solid #0b5ed7; border-bottom:1px solid #0b5ed7; text-shadow:0 0 4px #0b5ed7;">Loading…</div>
 
-  <!-- your other scripts… -->
+  <!-- Scripts -->
   <script src="ticker.js" defer></script>
-  …
-
-
+  <script src="script.js" defer></script>
 
   <!-- Bootstrap JS Bundle (includes Popper) -->
   <script
@@ -139,7 +154,5 @@
     src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"
     defer
   ></script>
-  <!-- Custom script -->
-  <script src="script.js" defer></script>
 </body>
 </html>
